@@ -14,9 +14,22 @@ class DB {
 
     public function saveFileData(array $data){
         if(mysql_query("INSERT INTO files_info(filename,originalName,data) VALUES('{$data['filename']}','{$data['originalName']}','{$data['fileInfo']}')")){
-            return true;
+            return mysql_insert_id($this->connection);
         }else{
             return false;
         }
     }
+
+    public function deleteFile($id){
+        if($id!=''){
+            if(mysql_query("DELETE FROM file_uploads WHERE id={$id}")){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
 }
