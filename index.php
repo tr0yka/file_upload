@@ -7,6 +7,14 @@ $db = new DB();
 $file = new Files();
 $list = $db->getFilesList();
 
+if(isset($_GET['file']) && !empty($_GET['file'])){
+    $id = $_GET['file'];
+    if(is_numeric($id)){
+        $info = $file->getFile($id, $db);
+    }
+
+}
+
 ?>
 <html>
 <head>
@@ -41,7 +49,7 @@ $list = $db->getFilesList();
             <tbody>
                 <? foreach($list as $f): ?>
                     <tr>
-                        <td><?=$f['originalName'];?></td>
+                        <td><a href="/?file=<?=$f['id']?>"><?=$f['originalName'];?></a></td>
                         <td><?=$f['fileSize'];?></td>
                         <td><?=$f['fileType'];?></td>
                         <td><?=$f['added'];?></td>
@@ -80,23 +88,27 @@ $list = $db->getFilesList();
 </body>
 </html>
 <?php
+// Форма пришла
 if(isset($_POST['submit'])){
     $data = null;
+    // Получаем данные
     $comment = htmlspecialchars($_POST['comment']);
     $description = htmlspecialchars($_POST['description']);
+    //Если файл успешно сохранен
     if(false != ($data = $file->saveFile())){
         $data['comment'] = $comment;
         $data['description'] = $description;
+        //Если произошла запись в БД
         if(false != ($id = $db->saveFileData($data))){
+            // "Перезагрузка" страницы для предотвращения повторной загрузки файла.
             echo "<script>window.location = 'http://{$_SERVER['HTTP_HOST']}';</script>";
         }else{
+            //выводим alert с ошибкой
             echo '<script> alert("Произошла ошибка при сохранении файла"); </script>';
         }
     }
 
-
 }
-
 
 
 ?>

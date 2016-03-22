@@ -49,4 +49,13 @@ class DB {
         return $list;
     }
 
+    public function getDataOneFile($id){
+        $data = [];
+        $query = "SELECT * FROM files_info WHERE id={$id} LIMIT 1";
+        $res = mysql_query($query);
+        $f = mysql_fetch_array($res);
+
+        return $f;
+    }
+
 }
