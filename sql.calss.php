@@ -13,8 +13,10 @@ class DB {
     }
 
     public function saveFileData(array $data){
-        if(mysql_query("INSERT INTO files_info(filename,originalName,data) VALUES('{$data['filename']}','{$data['originalName']}','{$data['fileInfo']}')")){
+        $query = "INSERT INTO `files_info` (`id`, `fileName`, `originalName`, `fileType`, `fileSize`, `comment`, `description`, `added`) VALUES (NULL, '{$data['fileName']}', '{$data['originalName']}', '{$data['fileType']}', '{$data['fileSize']}', '{$data['comment']}', '{$data['description']}', '{$data['added']}')";
+        if(mysql_query($query)){
             return mysql_insert_id($this->connection);
+            //return $data;
         }else{
             return false;
         }
