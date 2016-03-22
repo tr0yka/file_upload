@@ -12,10 +12,11 @@ class Files{
         $fileIndexName = $this->generateName();
         $upload_file = $upload_dir.$fileIndexName;
         if(move_uploaded_file($_FILES['userfile']['tmp_name'],$upload_file)){
-            $data['size'] = filesize($upload_file);
-            $data['inadexName'] = $fileIndexName;
+            $data['fileSize'] = filesize($upload_file);
+            $data['fileName'] = $fileIndexName;
             $data['fileType'] = $fileType;
-            $data['realName'] = $_FILES['userfile']['name'];
+            $data['originalName'] = $_FILES['userfile']['name'];
+            $data['added'] = $date;
             return $data;
         }else{
             return false;
