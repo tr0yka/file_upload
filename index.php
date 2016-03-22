@@ -42,8 +42,8 @@ $list = $db->getFilesList();
                 <? foreach($list as $f): ?>
                     <tr>
                         <td><?=$f['originalName'];?></td>
-                        <td><?=$f['size'];?></td>
-                        <td><?=json_decode($f['data'])?></td>
+                        <td><?=$f['fileSize'];?></td>
+                        <td><?=$f['fileType'];?></td>
                         <td><?=$f['added'];?></td>
                     </tr>
                 <? endforeach; ?>
@@ -59,7 +59,7 @@ $list = $db->getFilesList();
 <div id="popup">
     <div id="close">x</div>
     <div id="form_content">
-        <form enctype="multipart/form-data" method="POST" action="">
+        <form id="form" enctype="multipart/form-data" method="POST" action="">
             <p>
                 <label for="userfile">Файл: </label>
                 <input id="userfile" name="userfile" type="file">
@@ -81,30 +81,22 @@ $list = $db->getFilesList();
 </html>
 <?php
 if(isset($_POST['submit'])){
+    $data = null;
     $comment = htmlspecialchars($_POST['comment']);
     $description = htmlspecialchars($_POST['description']);
-    $upload_dir = '../uploads/';
-    $fileType = explode('.',$_FILES['userfile']['name']);
-    $fileType = $fileType[count($fileType)-1];
-    $fileIndexName = generate_name();
-    $date = new DateTime();
-    $date = $date->format('Y-m-d H:i:s');
-    $upload_file = $upload_dir.$fileIndexName;
-    if(move_uploaded_file($_FILES['userfile']['tmp_name'],$upload_file)){
-
-    }else{
-        echo '<script> alert("Ошибка при копировании файла") </script>';
+    if(false != ($data = $file->saveFile())){
+        $data['comment'] = $comment;
+        $data['description'] = $description;
+        if(false != ($id = $db->saveFileData($data))){
+            echo "<script>window.location = 'http://{$_SERVER['HTTP_HOST']}';</script>";
+        }else{
+            echo '<script> alert("Произошла ошибка при сохранении файла"); </script>';
+        }
     }
 
 
 }
 
 
-function generate_name(){
-    $name = '';
-    for($i=0;$i<20;$i++){
-        $name  .= rand(0,9);
-    }
-    return md5($name);
-}
+
 ?>
