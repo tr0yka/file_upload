@@ -32,4 +32,19 @@ class DB {
         }
     }
 
+    public function getFilesList($param = null){
+            $query = '';
+        if($param == null){
+            $query = "SELECT * FROM files_info ORDER BY added DESC";
+        }else{
+            $query = "SELECT * FROM files_info ORDER BY {$param['field']} {$param['type']}";
+        }
+        $list = [];
+        $res = mysql_query($query);
+        while($f = mysql_fetch_array($res)){
+            $list[] = $f;
+        }
+        return $list;
+    }
+
 }
